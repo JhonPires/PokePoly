@@ -1,0 +1,1 @@
+export function eventCard(card){const lucky=card.kind==='Sorte';return `<article class="event-card ${lucky?'lucky':'unlucky'}"><span>${lucky?'✦ SORTE':'⚡ REVÉS'}</span><h3>${card.title}</h3><p>${card.text}</p></article>`;}
