@@ -16,7 +16,7 @@ O protótipo é um combate livre entre vários treinadores, com pontuação por 
 
 O atacante escolhe um Pokémon de um território que já capturou. A partida começa sem Pokémon inicial; antes da primeira captura, uma casa rival oferece apenas o pagamento do aluguel integral, e o Ataque Rocket oferece apenas a taxa integral da casa. O defensor é o Pokémon daquela casa, no nível de melhoria atual. No Ataque Rocket, o defensor vem da equipe Rocket da região.
 
-As regras econômicas existentes continuam: vitória contra defensor paga 50% do aluguel total; derrota paga 150%. Contra a Rocket, vitória concede 75 moedas e derrota não cobra nem envia ao Descanso. Empate por tempo cobra o aluguel normal; contra a Rocket, não há prêmio. O encerramento da batalha acontece uma única vez no motor, por `settleEncounter`.
+As regras econômicas existentes continuam: vitória contra defensor paga 50% do aluguel total; derrota paga 150%. Contra a Rocket, vitória concede 75 moedas e derrota não cobra nem envia ao Descanso. Tempo esgotado conta como derrota do desafiante: cobra 150% do aluguel contra defensor e não concede prêmio contra a Rocket. O encerramento da batalha acontece uma única vez no motor, por `settleEncounter`.
 
 ## Catálogo de golpes
 
@@ -32,7 +32,7 @@ Cada região tem um cenário próprio em `assets/arena/`. As três imagens são 
 
 ## Estado da implementação
 
-A primeira arena jogável já está integrada às partidas no mesmo dispositivo. O atacante escolhe um Pokémon do time, enfrenta uma IA em um duelo de até 45 segundos e usa movimento, duas habilidades e dash. As animações do SpriteCollab e a paleta azul/violeta aparecem no canvas. A vitória, a derrota e o empate passam por `settleEncounter` uma única vez; o empate cobra aluguel normal e não concede prêmio Rocket. Após mostrar o resultado por três segundos, o modal fecha e a partida continua no tabuleiro. A página `docs/arena-preview.html` é uma galeria dos cenários; o combate só começa na partida.
+A primeira arena jogável já está integrada às partidas no mesmo dispositivo. O atacante escolhe um Pokémon do time, enfrenta uma IA em um duelo de até 25 segundos e usa movimento, duas habilidades e dash. As animações do SpriteCollab e a paleta azul/violeta aparecem no canvas. A vitória ou derrota passam por `settleEncounter` uma única vez; tempo esgotado é derrota do desafiante. Após mostrar o resultado por três segundos, o modal fecha e a partida continua no tabuleiro. A página `docs/arena-preview.html` é uma galeria dos cenários; o combate só começa na partida.
 
 A sala online conserva, por enquanto, a batalha por turnos anterior. Assim a simulação em tempo real ainda não é transmitida pelo host; esse é o próximo passo técnico para unificar o combate em todos os modos.
 
@@ -44,4 +44,4 @@ A sala online conserva, por enquanto, a batalha por turnos anterior. Assim a sim
 
 ## Primeiro recorte jogável
 
-Um duelo contra a IA, de até 45 segundos, com movimento, dash, duas habilidades; atacante escolhido entre seus Pokémon; defensor da casa ou Rocket; indicadores de vida e recarga; sprites locais. Esse recorte valida a sensação da arena e o tempo médio de uma jogada antes de ampliar o catálogo de golpes ou sincronizar o combate em tempo real pela sala online.
+Um duelo contra a IA, de até 25 segundos, com movimento, dash, duas habilidades; atacante escolhido entre seus Pokémon; defensor da casa ou Rocket; indicadores de vida e recarga; sprites locais. Esse recorte valida a sensação da arena e o tempo médio de uma jogada antes de ampliar o catálogo de golpes ou sincronizar o combate em tempo real pela sala online.

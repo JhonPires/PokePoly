@@ -11,7 +11,8 @@ const visuals={1:[51409,49312],2:[51409,49312],3:[51525,50948],4:[51774,49865],5
 export const ARENA_BALANCE=Object.freeze({playerBasicCooldown:1.15,playerSpecialCooldown:5.2,enemyBasicCooldown:1.05,enemySpecialCooldown:4.3,playerBasicDamage:11,playerSpecialDamage:22,enemyBasicDamage:12,enemySpecialDamage:20});
 export function movesFor(name){const raw=species.get(name.replace(/^Mega /,'')),type=raw?.types?.[0]||1;return {type,names:names[type]||names[1],color:palette[type]||palette[1],missile:visuals[type]?.[0]||visuals[1][0],hit:visuals[type]?.[1]||visuals[1][1]};}
 
-const W=800,H=460,LIMIT=45;
+export const ARENA_DURATION=25;
+const W=800,H=460,LIMIT=ARENA_DURATION;
 const clamp=(value,min,max)=>Math.max(min,Math.min(max,value));
 // Todas as artes exibem um piso em perspectiva no mesmo enquadramento.
 // As coordenadas representam os pés dos combatentes, não a cabeça da sprite.
@@ -53,7 +54,7 @@ export function startArena({canvas,controls,attacker,defender,region='kanto',lev
  const finish=result=>{if(ended)return;ended=true;held.clear();abort.abort();cancelAnimationFrame(frame);onState?.(stateFrame());draw();onFinish(result);};
  const update=dt=>{
   if(spectator)return;
-  elapsed+=dt;time=Math.max(0,time-dt);if(time===0){finish('draw');return;}
+  elapsed+=dt;time=Math.max(0,time-dt);if(time===0){finish('loss');return;}
   for(const fighter of [player,enemy]){fighter.cd=Math.max(0,fighter.cd-dt);fighter.special=Math.max(0,fighter.special-dt);fighter.flash=Math.max(0,fighter.flash-dt);}
   player.dash=Math.max(0,player.dash-dt);player.dashTime=Math.max(0,player.dashTime-dt);
   let dx=Number(held.has('right'))-Number(held.has('left')),dy=Number(held.has('down'))-Number(held.has('up'));
@@ -103,7 +104,7 @@ export function startArena({canvas,controls,attacker,defender,region='kanto',lev
   ctx.fillStyle='#0c1935dd';rounded(W/2-95,14,190,38,10);ctx.fill();ctx.fillStyle='#fff0c5';ctx.font='bold 20px Segoe UI';ctx.textAlign='center';ctx.fillText(`${Math.ceil(time)} s`,W/2,40);
   ctx.fillStyle='#0c1935dd';rounded(13,H-57,390,45,7);ctx.fill();ctx.fillStyle='#ecddff';ctx.font='12px Segoe UI';ctx.textAlign='left';ctx.fillText(`J · ${player.style.names[0]} ${player.cd?`${player.cd.toFixed(1)}s`:'PRONTO'}`,24,H-39);ctx.fillText(`K · ${player.style.names[1]} ${player.special?`${player.special.toFixed(1)}s`:'PRONTO'}`,24,H-21);
   ctx.fillStyle='#0c1935dd';rounded(W-125,H-45,110,33,7);ctx.fill();ctx.fillStyle='#ffe19c';ctx.textAlign='right';ctx.fillText(`Dash ${player.dash?`${player.dash.toFixed(1)}s`:'PRONTO'}`,W-25,H-24);
-  if(ended){ctx.fillStyle='#0c1324bb';ctx.fillRect(0,0,W,H);ctx.fillStyle='#fff0c5';ctx.font='bold 38px Segoe UI';ctx.textAlign='center';ctx.fillText(enemy.hp<=0?'VITÓRIA':player.hp<=0?'DERROTA':'TEMPO ESGOTADO',W/2,H/2);}
+  if(ended){ctx.fillStyle='#0c1324bb';ctx.fillRect(0,0,W,H);ctx.fillStyle='#fff0c5';ctx.font='bold 38px Segoe UI';ctx.textAlign='center';ctx.fillText(enemy.hp<=0?'VITÓRIA':time===0?'TEMPO ESGOTADO':'DERROTA',W/2,H/2);}
  };
  const loop=now=>{if(stopped||ended)return;const dt=clamp((now-last)/1000,0,.04);last=now;update(dt);if(!ended){draw();frame=requestAnimationFrame(loop);}};
  frame=requestAnimationFrame(loop);

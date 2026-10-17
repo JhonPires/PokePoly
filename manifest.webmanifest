@@ -1,0 +1,16 @@
+{
+  "id": "./",
+  "name": "PokéPoly",
+  "short_name": "PokéPoly",
+  "description": "Jogo de tabuleiro Pokémon para 2 a 4 treinadores.",
+  "lang": "pt-BR",
+  "start_url": "./index.html",
+  "scope": "./",
+  "display": "standalone",
+  "background_color": "#101b35",
+  "theme_color": "#1a2c4b",
+  "icons": [
+    { "src": "assets/brand/icon-192.png", "sizes": "192x192", "type": "image/png" },
+    { "src": "assets/brand/icon-512.png", "sizes": "512x512", "type": "image/png" }
+  ]
+}
