@@ -1,0 +1,20 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" role="img" aria-label="PokéPoly">
+  <defs>
+    <linearGradient id="red" x1="0" y1="0" x2="1" y2="1">
+      <stop stop-color="#ff7977"/>
+      <stop offset="1" stop-color="#d91f38"/>
+    </linearGradient>
+    <linearGradient id="cream" x1="0" y1="0" x2="0" y2="1">
+      <stop stop-color="#fff8df"/>
+      <stop offset="1" stop-color="#efdab4"/>
+    </linearGradient>
+  </defs>
+  <rect x="2" y="2" width="60" height="60" rx="17" fill="#0b1941" stroke="#ffe4a7" stroke-width="3"/>
+  <circle cx="32" cy="32" r="25" fill="#6425b6"/>
+  <circle cx="32" cy="30" r="23" fill="url(#cream)" stroke="#071938" stroke-width="4"/>
+  <path d="M9 30a23 23 0 0 1 46 0Z" fill="url(#red)"/>
+  <path d="M10 30h44" stroke="#071938" stroke-width="5"/>
+  <circle cx="32" cy="30" r="9" fill="#071938"/>
+  <circle cx="32" cy="30" r="5.5" fill="#fff8dc" stroke="#dab877" stroke-width="1.5"/>
+  <path d="M17 19a21 21 0 0 1 20-10" fill="none" stroke="#fff9e8" stroke-width="3" stroke-linecap="round" opacity=".85"/>
+</svg>
