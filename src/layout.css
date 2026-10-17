@@ -29,3 +29,19 @@ dialog{scrollbar-gutter:stable}
 @media(max-width:600px){.setup-logo{height:58px;width:180px}.center .board-logo{width:80%;max-height:calc(var(--board-size) / 7);margin:2px auto 4px}.board-logo .brand-logo{max-height:calc(var(--board-size) / 7)}}
 @media(max-height:550px){:root{--board-size:min(calc(100dvh - 58px),calc(100vw - var(--sidebar-width) - var(--sidebar-width) - 88px))}.setup-logo{height:45px}.center .board-logo{margin:0 auto 3px}}
 @media(max-height:550px) and (max-width:1000px){:root{--board-size:min(calc(100dvh - 58px),calc(100vw - 32px))}}
+
+/* Feedback da captura, evolução e encerramento da Liga. */
+.tile-captured{animation:territory-capture .85s ease-out}
+.tile-upgraded{animation:territory-upgrade .95s ease-out}
+@keyframes territory-capture{0%{filter:brightness(2.1);transform:scale(1.18);z-index:9}55%{filter:brightness(1.35);transform:scale(1.07);z-index:9}100%{filter:brightness(1);transform:scale(1)}}
+@keyframes territory-upgrade{0%{filter:drop-shadow(0 0 0 #ffe699);transform:translateY(0);z-index:9}35%{filter:drop-shadow(0 0 12px #ffe699);transform:translateY(-8px);z-index:9}100%{filter:drop-shadow(0 0 0 #ffe699);transform:translateY(0)}}
+#help{width:min(760px,94vw)}.help-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px;margin:18px 0}.help-grid section{padding:14px;background:#172943;border:1px solid #7185a9;border-radius:8px}.help-grid b{color:#ffe3a4;font-size:13px}.help-grid p{font-size:12px;line-height:1.55;color:#d2d9ef;margin:8px 0 0}
+#victory{width:min(540px,94vw);text-align:center}#victory-reason{color:#d6ddf1;font-size:13px;line-height:1.5}.victory-row{display:flex;align-items:center;justify-content:space-between;gap:12px;text-align:left;padding:12px 14px;margin:8px 0;background:#15253f;border:1px solid #7185a9;border-left:6px solid var(--player);border-radius:7px}.victory-row:first-child{background:#493b42;border-color:#f4d28e;border-left-color:var(--player)}.victory-row span{color:#ffe2a2;font-weight:700}#close-victory{margin-top:16px}
+@media(max-width:600px){.help-grid{grid-template-columns:1fr}.help-grid section{padding:10px}.help-grid p{font-size:11px}}
+@media(prefers-reduced-motion:reduce){.tile-captured,.tile-upgraded{animation:none}}
+
+/* As casas mais abaixo precisam desenhar seus defensores sobre as casas acima. */
+#board .tile{z-index:var(--tile-layer)}
+#board .tile.owned{z-index:calc(var(--tile-layer) + 50)}
+#board .tile:not(.owned):hover,#board .tile:not(.owned).selected{z-index:calc(var(--tile-layer) + 20)}
+#board .tile:not(.owned):has(.tokens:not(:empty)){z-index:calc(var(--tile-layer) + 30)}

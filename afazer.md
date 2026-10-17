@@ -1,0 +1,5 @@
+- Melhorar visualmente os valores das casas está quase impossivel de se ver
+- Dar possibilidade de escolher quantas rodadas aquela partida vai ter (atualmente está fixo 24)
+- No final está fazendo a soma das propriedas e dinheiro que tem no banco?
+- Alterar o bloco inicial que configura a sala (radios buttons, regiao, treinadores) muito grande para poucas infos, sem estilos nos radios
+- Melhorar o design dos modais que aparecem enquanto jogamos, pensar em algo com uma imagem com relação a pokemon igual fizemos com as cartas

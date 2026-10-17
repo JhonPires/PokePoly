@@ -5,12 +5,12 @@ export const groups=[
  {name:'Trilhas de Fuchsia',ids:[31,32,34]}, {name:'Liga das Ilhas',ids:[36,37,39]}
 ];
 export const cards=[
- {kind:'Sorte',title:'Entrega do Professor Oak',text:'Você ajudou a catalogar Pokémon. Receba ₽ 150.',amount:150},
- {kind:'Sorte',title:'Tesouro do Meowth',text:'Meowth encontrou moedas pelo caminho. Receba ₽ 100.',amount:100},
- {kind:'Sorte',title:'Resgate de Lapras',text:'Sua ajuda foi recompensada pelos treinadores. Receba ₽ 200.',amount:200},
- {kind:'Sorte',title:'Campeão do concurso',text:'Seu Pokémon encantou os jurados. Receba ₽ 120.',amount:120},
- {kind:'Revés',title:'Travessura de Gastly',text:'Seu equipamento ficou danificado. Pague ₽ 75.',amount:-75},
- {kind:'Revés',title:'Fome de Snorlax',text:'Você precisou comprar comida para liberar a trilha. Pague ₽ 100.',amount:-100},
- {kind:'Revés',title:'Choque do Pikachu',text:'Hora de reparar sua bicicleta! Pague ₽ 120.',amount:-120},
+ {kind:'Sorte',title:'Entrega do Professor Oak',text:'Você ajudou a catalogar Pokémon. Receba 150 moedas.',amount:150},
+ {kind:'Sorte',title:'Tesouro do Meowth',text:'Meowth encontrou moedas pelo caminho. Receba 100 moedas.',amount:100},
+ {kind:'Sorte',title:'Resgate de Lapras',text:'Sua ajuda foi recompensada pelos treinadores. Receba 200 moedas.',amount:200},
+ {kind:'Sorte',title:'Campeão do concurso',text:'Seu Pokémon encantou os jurados. Receba 120 moedas.',amount:120},
+ {kind:'Revés',title:'Travessura de Gastly',text:'Seu equipamento ficou danificado. Pague 75 moedas.',amount:-75},
+ {kind:'Revés',title:'Fome de Snorlax',text:'Você precisou comprar comida para liberar a trilha. Pague 100 moedas.',amount:-100},
+ {kind:'Revés',title:'Choque do Pikachu',text:'Hora de reparar sua bicicleta! Pague 120 moedas.',amount:-120},
  {kind:'Revés',title:'Armadilha da Equipe Rocket',text:'A Equipe Rocket interrompeu sua jornada. Vá direto ao Descanso.',rest:true}
 ];

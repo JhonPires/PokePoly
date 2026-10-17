@@ -1,6 +1,6 @@
 const randomBytes=n=>({toString:()=>Array.from(crypto.getRandomValues(new Uint8Array(n)),b=>b.toString(16).padStart(2,'0')).join('')});
 const randomInt=(min,max)=>{const range=max-min,limit=Math.floor(4294967296/range)*range;let value;do{value=crypto.getRandomValues(new Uint32Array(1))[0];}while(value>=limit);return min+value%range;};
-import {createGame,prepareRoll,move,resolveLanding,buy,evolve,pay,settleBattle,finishTurn,releaseByPaying,lineage,createBattle,settleEncounter,needsFinance,sellHouse,bankrupt,makeOffer,replyOffer} from './engine.js';
+import {createGame,prepareRoll,move,resolveLanding,buy,evolve,pay,payRocket,battlePokemon,settleBattle,finishTurn,releaseByPaying,lineage,createBattle,settleEncounter,needsFinance,sellHouse,bankrupt,makeOffer,replyOffer} from './engine.js';
 import {regions} from './regions.js';
 import {pinOptions} from './pins.js';
 import {pacing} from './presentation.js';
@@ -26,8 +26,9 @@ export class Rooms{
  case 'buy':if(s.phase!=='resolve'||r.battle||!Number.isInteger(command.choice)||!buy(s,id,command.choice))fail('Captura inválida.');end();break;
  case 'evolve':if(r.battle||!evolve(s,id))fail('Evolução indisponível nesta casa ou turno.');break;
  case 'pay':if(s.phase!=='resolve'||r.battle||!o||o.owner===slot)fail('Aluguel indisponível.');pay(s,id);end();break;
+ case 'pay-rocket':if(r.battle||!payRocket(s))fail('Taxa Rocket indisponível.');end();break;
  case 'end':if(s.phase!=='resolve'||r.battle||(o&&o.owner!==slot&&s.rentResolvedId!==id)||(id===30&&!s.rocketResolved))fail('Resolva o aluguel antes de continuar.');end();break;
- case 'battle':if(s.phase!=='resolve'||r.battle||(id===30?s.rocketResolved:(!o||o.owner===slot)))fail('Desafio inválido.');r.battle=createBattle(s,id);break;
+ case 'battle':if(s.phase!=='resolve'||r.battle||!battlePokemon(s).length||(id===30?s.rocketResolved:(!o||o.owner===slot)))fail('Desafio inválido. Capture um território para batalhar.');r.battle=createBattle(s,id);break;
  case 'attack':{const b=r.battle;if(!b||b.finished)fail('Nenhuma batalha ativa.');b.enemy=Math.max(0,b.enemy-18-this.die()*3);if(b.enemy)b.hp=Math.max(0,b.hp-12-this.die()*3);if(!b.enemy||!b.hp){settleEncounter(s,b);}break;}
  case 'finish-battle':if(!r.battle?.finished)fail('A batalha não terminou.');r.battle=null;end();break;
  default:fail('Ação desconhecida.');}

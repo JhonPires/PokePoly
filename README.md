@@ -22,19 +22,21 @@ Kanto (151 espécies, geração I), Johto (100, geração II) e Hoenn (135, gera
 As três opções de cada território compartilham tipo e estágio evolutivo real, calculado sobre toda a árvore, sem reiniciar a contagem na fronteira entre gerações. Crobat é terceiro estágio; Steelix e Scizor são segundo; Skarmory é primeiro. As ofertas só incluem espécies da geração escolhida e só formam trios quando existem três candidatos compatíveis. O sorteio varia por casa e partida, evitando repetições enquanto há opções suficientes.
 
 ## Nível da casa e evolução da espécie
-Cada território tem **quatro níveis de melhoria**, para qualquer Pokémon. O investimento sempre custa o preço inicial da casa e aumenta o aluguel segundo o mesmo multiplicador (1x, 3x, 5x e 7x), independentemente da quantidade de evoluções da espécie.
+Cada território tem **quatro níveis de melhoria**, para qualquer Pokémon. Cada melhoria custa 60% do preço inicial da casa, arredondado para a próxima dezena, e aumenta o aluguel segundo o mesmo multiplicador (1x, 3x, 5x e 7x), independentemente da quantidade de evoluções da espécie.
 
 Quando existe uma próxima evolução da linha selecionada dentro da geração, a espécie muda. Caso contrário, ocorre treinamento: a espécie permanece e o nível da casa aumenta normalmente. Assim, um Pokémon sem evolução ou já evoluído não perde níveis de melhoria nem potencial de aluguel. O GIF usa a última espécie disponível, nunca uma posição inexistente na linha. Melhorias continuam limitadas a uma por turno e somente na casa atual.
 
 ## Outras regras
-- Volta ao tabuleiro: ₽ 200.
+- Cada treinador começa sem Pokémon. Somente a captura de um território adiciona um defensor ao time e libera desafios.
+- Volta ao tabuleiro: 200 moedas.
 - Vitória contra defensor: paga 50% do aluguel total; derrota: 150%.
 - Dados iguais concedem outra jogada; três pares no turno enviam ao Descanso sem bônus de volta.
 - **Visita à Rocket**: envio direto ao Descanso.
-- **Ataque Rocket**: batalha obrigatória contra Pokémon da equipe. Vitória concede ₽ 75 uma única vez; derrota não cobra multa nem envia ao Descanso.
-- Descanso: paga ₽ 100 ou tenta dados iguais. Falha perde turno; sucesso avança sem jogada extra.
+- **Ataque Rocket**: com Pokémon capturado, é possível batalhar por um prêmio de 75 moedas ou pagar a taxa integral da casa. Sem território próprio, paga-se somente a taxa integral. Derrota na batalha não cobra multa nem envia ao Descanso.
+- Descanso: paga 100 moedas ou tenta dados iguais. Falha perde turno; sucesso avança sem jogada extra.
 - Grupo completo: +50% de aluguel em todas as casas desse grupo.
-- Cartas de Sorte/Revés têm recompensas, custos ou envio ao Descanso. Saldos são limitados a zero no protótipo.
+- Cartas de Sorte/Revés têm recompensas, custos ou envio ao Descanso. Saldos são limitados a zero; dívidas de aluguel são resolvidas na Central Financeira.
+- A Liga termina após 24 rodadas completas. Vence o maior patrimônio (dinheiro + preço de captura + melhorias investidas). Se restar apenas um treinador antes disso, ele vence imediatamente.
 
 ## Interface e arquivos
 Tabuleiro completo no viewport, dados com animação, salto de pinos e modal após chegada. Tela lateral em estilo Pokégear, pinos temáticos e cenários locais, sem verde no tema. Botões do lobby compartilham altura, largura, tipografia e alinhamento.
@@ -47,15 +49,21 @@ Tabuleiro completo no viewport, dados com animação, salto de pinos e modal ap�
 - `scripts/serve.js`: servidor estático opcional para desenvolvimento.
 
 ## Pendências
-Hospedagem estática pública da página, migração de host, TURN para redes restritivas, falência e condição final de vitória, combate com movimentação livre, habilidades e revisão de balanceamento. O transporte P2P não exige VPS própria, mas depende de conectividade e sinalização pública.
+Para uma etapa futura: hospedagem estática pública da página, migração de host e TURN para redes restritivas. O combate com movimentação livre e habilidades permanece na próxima etapa de jogabilidade.
 
 ## Atualização: Descanso, negociações e recuperação financeira
 - O contador do Descanso registra somente tentativas sem par. Após três falhas, a quarta rolagem libera o jogador e move a soma dos dados, sem cobrança e sem jogada extra. Um novo envio ao Descanso zera o contador.
-- Ao cair em território rival, é possível propor a compra por um valor inteiro positivo dentro do saldo. A partida aguarda aceite ou recusa do dono, inclusive fora do turno dele. Aceitar transfere dinheiro, território, defensor e melhorias; recusar preserva o estado e retorna à escolha entre aluguel e batalha.
-- Ao ficar sem dinheiro, a Central Financeira oferece venda ao banco ou declaração de falência. A venda retorna 50% do preço inicial mais os investimentos em melhorias; a casa fica livre, perde suas melhorias e o defensor sai do time.
+- Após capturar ao menos um território, ao cair em território rival é possível propor a compra por um valor inteiro positivo dentro do saldo. A partida aguarda aceite ou recusa do dono, inclusive fora do turno dele. Aceitar transfere dinheiro, território, defensor e melhorias; recusar preserva o estado e retorna à escolha entre aluguel e batalha. Sem território próprio, somente o aluguel integral pode ser pago.
+- Ao ficar sem dinheiro, a Central Financeira oferece venda ao banco ou declaração de falência. A venda retorna 50% do investimento total (captura + melhorias); a casa fica livre, perde suas melhorias e o defensor sai do time.
 - Aluguel não coberto pelo saldo fica como dívida. Dinheiro recuperado por venda quita essa dívida antes de continuar; a cobrança não é repetida. Não é permitido prosseguir enquanto ainda houver dívida ou saldo zerado.
 - Falência requer confirmação na interface, elimina o treinador e libera todas as suas casas. Turnos pulam eliminados. O último treinador ativo vence.
 - Duas artes de carta, Sorte e Revés, estão em `assets/cards`. O menu **Cartas de Sorte / Revés** permite visualizar os modelos sem aplicar efeitos. Nos encontros, a arte recebe o título e o texto da carta sorteada.
 
 ## Distribuição dos painéis e marca
 Em desktop, menu e treinadores ficam à esquerda; território e diário ficam à direita. O tabuleiro permanece ao centro e inteiro no viewport. Em telas de até 1000 px, ambos os lados são reunidos no menu recolhível. Modais, painéis e menu usam a mesma paleta de scrollbar. O logo PNG com transparência está em `assets/brand/pokepoly-logo.png`; prompt e origem em `docs/logo.md`.
+
+## Balanceamento e acabamento inicial
+
+`node scripts/simulate-economy.js 1000` joga mil partidas automáticas com quatro treinadores alternando Kanto, Johto e Hoenn. O agente compra casas livres, melhora casas próprias quando pode, paga aluguel e vende para quitar dívida. É uma referência de ritmo, não substitui partidas com pessoas. Com o limite de 24 rodadas, todas as mil partidas terminaram; a mediana foi de 109 jogadas (incluindo dados iguais), com média de 24 capturas, 8 melhorias e 1 venda. Antes do limite, somente 315 de 400 simulações terminavam em até 800 jogadas. Os preços de captura, aluguéis, bônus de volta e cartas foram mantidos após essa medição; a melhoria caiu de 100% para 60% do preço da casa para ser uma opção mais viável antes do encerramento.
+
+O menu **Como jogar** apresenta as regras e aparece na primeira partida local. O fim da jornada mostra um placar por patrimônio. Captura e melhoria têm animações curtas no tabuleiro. Há um som curto a cada salto do pino; os efeitos podem ser desligados no menu, e a escolha fica salva no navegador.
