@@ -19,7 +19,7 @@
     <link rel="stylesheet" href="src/polish.css">
 </head>
 
-<body><button id="menu-toggle" aria-controls="game-sidebar" aria-expanded="false">☰ Menu da partida</button>
+<body><div id="orientation-hint" role="status">↻ Para jogar melhor, vire o celular na horizontal</div><button id="menu-toggle" aria-controls="game-sidebar" aria-expanded="false">☰ Menu da partida</button>
     <main>
         <div class="layout">
             <section class="board-wrap">
@@ -137,15 +137,16 @@
             <div class="mark">◓</div>
             <div id="fighter" class="creature">ϟ</div>
             <div id="enemy" class="creature">✦</div>
-        </div><canvas id="battle-canvas" width="800" height="460" hidden aria-label="Arena de batalha"></canvas>
+        </div><div class="battle-stage"><canvas id="battle-canvas" width="800" height="460" hidden aria-label="Arena de batalha"></canvas>
         <div id="battle-controls" hidden>
+            <div class="arena-stick" data-control="stick" aria-label="Controle de movimento"><span></span></div>
             <div class="arena-pad"><button data-control="up" aria-label="Mover para cima">▲</button><button
                     data-control="left" aria-label="Mover para a esquerda">◀</button><button data-control="down"
                     aria-label="Mover para baixo">▼</button><button data-control="right"
                     aria-label="Mover para a direita">▶</button></div>
             <div class="arena-actions"><button data-control="basic">J · Golpe</button><button data-control="special">K ·
                     Especial</button><button data-control="dash">⇧ · Dash</button></div>
-        </div><small class="arena-credit">Sprites de batalha: <a href="https://github.com/PMDCollab/SpriteCollab"
+        </div></div><small class="arena-credit">Sprites de batalha: <a href="https://github.com/PMDCollab/SpriteCollab"
                 target="_blank" rel="noopener noreferrer">PMD Collab SpriteCollab</a> · Efeitos: <a
                 href="https://github.com/DistTopic/padventures-sprites" target="_blank"
                 rel="noopener noreferrer">PAdventures Sprites</a></small>

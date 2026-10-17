@@ -8,6 +8,8 @@ O jogo é estático: pode ser servido pelo Live Server, por hospedagem estática
 
 A versão publicada em https://jhonpires.github.io/PokePoly/ usa um manifesto PWA com ícones de 192 e 512 px e abre em modo independente quando instalada. No Android, abra o endereço no Chrome e use **Instalar app** no menu. No iPhone, abra no Safari e use **Compartilhar → Adicionar à Tela de Início**. A instalação mantém o jogo ligado ao endereço publicado; é preciso estar online para carregar a partida e para recursos remotos, incluindo sprites que não estão disponíveis localmente. A sala online também exige conexão.
 
+No celular, jogue com a tela na horizontal. O tabuleiro ocupa a altura disponível; na arena, arraste o controle circular à esquerda para mover o Pokémon e mantenha pressionado o golpe à direita para atacar. A habilidade especial e o dash ficam ao lado. Para reduzir engasgos, a arena móvel desenha até 30 quadros por segundo e usa efeitos leves no lugar das folhas remotas de projéteis.
+
 ## Multiplayer com host no navegador
 1. Selecione **Criar sala online**, região, nickname e pino.
 2. Compartilhe o código e o endereço da página do jogo com os convidados.

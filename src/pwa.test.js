@@ -8,6 +8,7 @@ test('manifesto instalável usa o escopo do GitHub Pages e ícones PNG válidos'
  assert.equal(manifest.start_url,'./index.html');
  assert.equal(manifest.scope,'./');
  assert.equal(manifest.display,'standalone');
+ assert.equal(manifest.orientation,'landscape');
  for(const size of [192,512]){
   const icon=manifest.icons.find(item=>item.sizes===`${size}x${size}`);
   assert.ok(icon,`Ícone ${size} ausente`);
