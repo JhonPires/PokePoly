@@ -1,6 +1,8 @@
 /* Pokégear, Poké Bolas e caixas de diálogo de RPG portátil. Sem verde no tema. */
 :root{--accent:#f08a8b;--electric:#f6d766;--ink:#293c68}
 body[data-region=johto]{--accent:#c2a0ef}body[data-region=hoenn]{--accent:#79b8f2}
+body[data-region=sinnoh]{--accent:#a9c6f5}body[data-region=unova]{--accent:#f3a284}body[data-region=kalos]{--accent:#dc9bd8}
+body[data-region=alola]{--accent:#faab9a}body[data-region=galar]{--accent:#e7a789}body[data-region=paldea]{--accent:#f2a883}
 .center h2,.game-logo{font-family:'Arial Rounded MT Bold','Trebuchet MS',sans-serif;font-style:italic;font-weight:1000;letter-spacing:-1px;color:#ffdf65;-webkit-text-stroke:1px #38548d;text-shadow:2px 2px #203b7b,4px 4px #122454,0 5px 10px #000b}
 .center h2 span,.game-logo span{color:#ffdf65}.center{background:radial-gradient(ellipse,#0b1730e8,#10152e9c 55%,transparent 75%)}.center .emblem{width:clamp(35px,calc(var(--board-size)/9),78px);height:clamp(35px,calc(var(--board-size)/9),78px);font-size:0;opacity:1;filter:drop-shadow(0 5px 3px #020919)}.pin-art{width:100%;height:100%;display:block;max-width:100%;flex:none}.center .emblem svg{transform:rotate(-12deg)}#region-badge{font-size:clamp(7px,calc(var(--board-size)/80),10px);letter-spacing:2px;color:#f7de97;background:#13294cba;padding:5px 10px;border:1px solid #7794c3;border-radius:12px;margin:4px 0}
 .board-wrap{border-color:#e7d5b8 #b4a6b5 #65617e #d1bec7;background:#233957;box-shadow:0 0 0 3px #293854,0 5px 0 #c3b0bd,0 12px 0 #62647f,0 20px 0 #292e49,0 32px 40px #0009}.tile{background:#f4e9d3;color:#293d5a;box-shadow:inset 0 2px 0 #fffc,0 3px 0 #8c8294}.tile b{color:#263b5c}.tile>span{color:#5d6a85}.tile.owned{background:color-mix(in srgb,var(--owner) 35%,#fff0d6)}.game-icon{color:#475e86}

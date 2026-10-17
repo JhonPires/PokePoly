@@ -1,5 +1,5 @@
-- Melhorar visualmente os valores das casas está quase impossivel de se ver
-- Dar possibilidade de escolher quantas rodadas aquela partida vai ter (atualmente está fixo 24)
-- No final está fazendo a soma das propriedas e dinheiro que tem no banco?
-- Alterar o bloco inicial que configura a sala (radios buttons, regiao, treinadores) muito grande para poucas infos, sem estilos nos radios
-- Melhorar o design dos modais que aparecem enquanto jogamos, pensar em algo com uma imagem com relação a pokemon igual fizemos com as cartas
+- [x] Melhorar a leitura dos valores nas casas com etiquetas maiores e alto contraste.
+- [x] Permitir escolher de 4 a 100 rodadas ao iniciar uma partida local ou criar sala online.
+- [x] Confirmar a pontuação final: dinheiro em caixa + valor das propriedades e melhorias; exibir os valores separados no placar.
+- [x] Compactar a configuração inicial e dar estilo aos botões de modo, região e treinadores.
+- [x] Usar a arte da região nos modais do tabuleiro, mantendo o conteúdo legível.

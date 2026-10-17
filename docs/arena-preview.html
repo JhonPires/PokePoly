@@ -16,16 +16,22 @@
    <button type="button" data-region="kanto" class="is-active" aria-pressed="true"><b>KANTO</b><span>Planalto Índigo</span></button>
    <button type="button" data-region="johto" aria-pressed="false"><b>JOHTO</b><span>Torres de Ecruteak</span></button>
    <button type="button" data-region="hoenn" aria-pressed="false"><b>HOENN</b><span>Costa vulcânica</span></button>
+   <button type="button" data-region="sinnoh" aria-pressed="false"><b>SINNOH</b><span>Montanha nevada</span></button>
+   <button type="button" data-region="unova" aria-pressed="false"><b>UNOVA</b><span>Ponte urbana</span></button>
+   <button type="button" data-region="kalos" aria-pressed="false"><b>KALOS</b><span>Praça luminosa</span></button>
+   <button type="button" data-region="alola" aria-pressed="false"><b>ALOLA</b><span>Terraço tropical</span></button>
+   <button type="button" data-region="galar" aria-pressed="false"><b>GALAR</b><span>Estádio real</span></button>
+   <button type="button" data-region="paldea" aria-pressed="false"><b>PALDEA</b><span>Cidade ao pôr do sol</span></button>
   </nav>
   <section class="art-panel" aria-label="Cenário da arena">
-   <div class="art-panel-top"><b id="art-title">Kanto · Planalto Índigo</b><span>VISTA DE CIMA · CAMPO DE BATALHA</span></div>
+   <div class="art-panel-top"><b id="art-title">Kanto · Planalto Índigo</b><span>VISTA FRONTAL · CAMPO DE BATALHA</span></div>
    <img id="arena-art" src="../assets/arena/kanto.png" alt="Arena de Kanto, piso de pedra e lanternas">
    <div class="art-panel-bottom"><p>Enfrente o defensor ao cair na casa dele. Vitória: 50% do aluguel. Derrota: aluguel com multa de 50%. Empate: aluguel normal.</p><a class="play-link" href="../index.html">Jogar no tabuleiro →</a></div>
   </section>
   <footer>Cenários criados para o PokéPoly · Sprites das batalhas: <a href="https://github.com/PMDCollab/SpriteCollab" target="_blank" rel="noopener noreferrer">PMD Collab SpriteCollab</a></footer>
  </main>
  <script type="module">
-  const arenas={kanto:{title:'Kanto · Planalto Índigo',alt:'Arena de Kanto, piso de pedra e lanternas'},johto:{title:'Johto · Torres de Ecruteak',alt:'Arena de Johto, pedra violeta e torres antigas'},hoenn:{title:'Hoenn · Costa vulcânica',alt:'Arena de Hoenn, piso de pedra entre rochas e água'}};
+  const arenas={kanto:{title:'Kanto · Planalto Índigo',alt:'Arena de Kanto, piso de pedra e lanternas'},johto:{title:'Johto · Torres de Ecruteak',alt:'Arena de Johto, pedra violeta e torres antigas'},hoenn:{title:'Hoenn · Costa vulcânica',alt:'Arena de Hoenn, piso de pedra entre rochas e água'},sinnoh:{title:'Sinnoh · Montanha nevada',alt:'Arena de Sinnoh, piso de pedra diante das montanhas'},unova:{title:'Unova · Ponte urbana',alt:'Arena de Unova, piso de pedra diante da cidade'},kalos:{title:'Kalos · Praça luminosa',alt:'Arena de Kalos, piso de pedra diante da cidade'},alola:{title:'Alola · Terraço tropical',alt:'Arena de Alola, piso de pedra diante do mar'},galar:{title:'Galar · Estádio real',alt:'Arena de Galar, piso de pedra no estádio'},paldea:{title:'Paldea · Cidade ao pôr do sol',alt:'Arena de Paldea, piso de pedra diante da cidade'}};
   document.querySelectorAll('[data-region]').forEach(button=>button.onclick=()=>{const region=button.dataset.region;document.querySelectorAll('[data-region]').forEach(other=>{other.classList.toggle('is-active',other===button);other.setAttribute('aria-pressed',String(other===button));});document.getElementById('art-title').textContent=arenas[region].title;document.getElementById('arena-art').src=`../assets/arena/${region}.png`;document.getElementById('arena-art').alt=arenas[region].alt;});
  </script>
 </body>

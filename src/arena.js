@@ -13,39 +13,46 @@ export function movesFor(name){const raw=species.get(name.replace(/^Mega /,'')),
 
 const W=800,H=460,LIMIT=45;
 const clamp=(value,min,max)=>Math.max(min,Math.min(max,value));
+// Todas as artes exibem um piso em perspectiva no mesmo enquadramento.
+// As coordenadas representam os pés dos combatentes, não a cabeça da sprite.
+export const ARENA_LIMITS=Object.freeze({left:34,right:W-34,top:215,bottom:H-36});
 const distance=(a,b)=>Math.hypot(a.x-b.x,a.y-b.y);
 const aim=(a,b)=>{const length=distance(a,b)||1;return {x:(b.x-a.x)/length,y:(b.y-a.y)/length};};
-const imageFor=name=>{const image=new Image(),src=spriteFor(name);if(src)image.src=new URL(`../${src}`,import.meta.url).href;return image;};
+const imageFor=name=>{const image=new Image(),src=spriteFor(name);if(src)image.src=/^https?:/.test(src)?src:new URL(`../${src}`,import.meta.url).href;return image;};
 const effectBase='https://raw.githubusercontent.com/DistTopic/padventures-sprites/main/sprites/';
 const effectImages=new Map();
 const effectImage=(category,id)=>{const key=`${category}/${id}`;if(!effectImages.has(key)){const image=new Image();image.src=`${effectBase}${key}.png`;effectImages.set(key,image);}return effectImages.get(key);};
 
-export function startArena({canvas,controls,attacker,defender,region='kanto',level=0,onFinish}){
+export function startArena({canvas,controls,attacker,defender,region='kanto',level=0,onFinish=()=>{},onState,spectator=false,initialState}){
  const ctx=canvas.getContext('2d'),attackStyle=movesFor(attacker),defendStyle=movesFor(defender);
  for(const style of [attackStyle,defendStyle]){effectImage('missile',style.missile);effectImage('effect',style.hit);}
- const regionId=['kanto','johto','hoenn'].includes(region)?region:'kanto';
+ const regionId=['kanto','johto','hoenn','sinnoh','unova','kalos','alola','galar','paldea'].includes(region)?region:'kanto';
  const background=new Image();background.src=new URL(`../assets/arena/${regionId}.png`,import.meta.url).href;
- const limits=regionId==='hoenn'?{left:205,right:595,top:98,bottom:350}:{left:34,right:W-34,top:48,bottom:H-36};
- const startX=regionId==='hoenn'?225:132;
- const player={x:startX,y:H/2,hp:100,maxHp:100,cd:0,special:0,dash:0,dashTime:0,flash:0,img:imageFor(attacker),sprite:loadArenaSprite(attacker),dir:2,actionAt:-10,moving:false,name:attacker,style:attackStyle};
- const enemy={x:W-startX,y:H/2,hp:115+level*20,maxHp:115+level*20,cd:1,special:2.8,flash:0,img:imageFor(defender),sprite:loadArenaSprite(defender),dir:6,actionAt:-10,moving:false,name:defender,style:defendStyle};
- const held=new Set(),shots=[],effects=[],impactSprites=[];let time=LIMIT,elapsed=0,ended=false,stopped=false,frame=0,last=performance.now(),enemyStrafe=1;
+ const limits=ARENA_LIMITS;
+ const startX=132;
+ const startY=(limits.top+limits.bottom)/2;
+ const player={x:startX,y:startY,hp:100,maxHp:100,cd:0,special:0,dash:0,dashTime:0,flash:0,img:imageFor(attacker),sprite:loadArenaSprite(attacker),dir:2,actionAt:-10,moving:false,name:attacker,style:attackStyle};
+ const enemy={x:W-startX,y:startY,hp:115+level*20,maxHp:115+level*20,cd:1,special:2.8,flash:0,img:imageFor(defender),sprite:loadArenaSprite(defender),dir:6,actionAt:-10,moving:false,name:defender,style:defendStyle};
+ const held=new Set(),shots=[],effects=[],impactSprites=[];let time=LIMIT,elapsed=0,ended=false,stopped=false,frame=0,last=performance.now(),enemyStrafe=1,lastBroadcast=-1;
+ if(initialState){for(const [target,data] of [[player,initialState.player],[enemy,initialState.enemy]])if(data){target.x=clamp(data.x,limits.left,limits.right);target.y=clamp(data.y,limits.top,limits.bottom);target.hp=clamp(data.hp,0,target.maxHp);target.dir=data.dir;}time=clamp(initialState.time,0,LIMIT);elapsed=LIMIT-time;}
  const abort=new AbortController(),keyMap={KeyW:'up',ArrowUp:'up',KeyS:'down',ArrowDown:'down',KeyA:'left',ArrowLeft:'left',KeyD:'right',ArrowRight:'right',KeyJ:'basic',Space:'basic',KeyK:'special',ShiftLeft:'dash',ShiftRight:'dash'};
  const hold=(key,on)=>on?held.add(key):held.delete(key);
- document.addEventListener('keydown',event=>{const key=keyMap[event.code];if(!key||ended)return;event.preventDefault();hold(key,true);},{signal:abort.signal});
+ if(!spectator){document.addEventListener('keydown',event=>{const key=keyMap[event.code];if(!key||ended)return;event.preventDefault();hold(key,true);},{signal:abort.signal});
  document.addEventListener('keyup',event=>{const key=keyMap[event.code];if(!key)return;event.preventDefault();hold(key,false);},{signal:abort.signal});
  window.addEventListener('blur',()=>held.clear(),{signal:abort.signal});
  controls.querySelectorAll('[data-control]').forEach(button=>{
   const key=button.dataset.control;
   button.addEventListener('pointerdown',event=>{event.preventDefault();button.setPointerCapture(event.pointerId);hold(key,true);},{signal:abort.signal});
   for(const type of ['pointerup','pointercancel','lostpointercapture'])button.addEventListener(type,()=>hold(key,false),{signal:abort.signal});
- });
+ });}
  for(const [key,label] of [['basic',attackStyle.names[0]],['special',attackStyle.names[1]]]){const button=controls.querySelector(`[data-control="${key}"]`);if(button)button.textContent=`${key==='basic'?'J':'K'} · ${label}`;}
  const burst=(x,y,color,r=18)=>effects.push({x,y,color,r,life:.38,max:.38});
  const projectile=(owner,from,to,damage,speed,radius,color,special=false)=>{const direction=aim(from,to);from.dir=directionFor(direction.x,direction.y);from.actionAt=elapsed;shots.push({owner,x:from.x+direction.x*30,y:from.y+direction.y*30,vx:direction.x*speed,vy:direction.y*speed,damage,radius,color,life:2,missile:from.style.missile,hit:from.style.hit,special});burst(from.x,from.y,color,special?28:14);playSound('attack');};
  const impact=(target,damage,color,hit)=>{target.hp=clamp(target.hp-damage,0,target.maxHp);target.flash=.24;burst(target.x,target.y,color,30);impactSprites.push({x:target.x,y:target.y-20,id:hit,life:.5,max:.5,size:92});playSound('impact');};
- const finish=result=>{if(ended)return;ended=true;held.clear();abort.abort();cancelAnimationFrame(frame);draw();onFinish(result);};
+ const stateFrame=()=>({time:Math.round(time*10)/10,player:{x:Math.round(player.x),y:Math.round(player.y),hp:Math.round(player.hp),dir:player.dir},enemy:{x:Math.round(enemy.x),y:Math.round(enemy.y),hp:Math.round(enemy.hp),dir:enemy.dir}});
+ const finish=result=>{if(ended)return;ended=true;held.clear();abort.abort();cancelAnimationFrame(frame);onState?.(stateFrame());draw();onFinish(result);};
  const update=dt=>{
+  if(spectator)return;
   elapsed+=dt;time=Math.max(0,time-dt);if(time===0){finish('draw');return;}
   for(const fighter of [player,enemy]){fighter.cd=Math.max(0,fighter.cd-dt);fighter.special=Math.max(0,fighter.special-dt);fighter.flash=Math.max(0,fighter.flash-dt);}
   player.dash=Math.max(0,player.dash-dt);player.dashTime=Math.max(0,player.dashTime-dt);
@@ -56,7 +63,7 @@ export function startArena({canvas,controls,attacker,defender,region='kanto',lev
   const gap=distance(player,enemy),toward=aim(enemy,player);
   enemy.dir=directionFor(toward.x,toward.y);enemy.moving=true;
   if(gap>215){enemy.x+=toward.x*155*dt;enemy.y+=toward.y*155*dt;}else if(gap<105){enemy.x-=toward.x*125*dt;enemy.y-=toward.y*125*dt;}else enemy.y+=enemyStrafe*95*dt;
-  if(enemy.y<90||enemy.y>H-75)enemyStrafe*=-1;
+  if((enemy.y<limits.top+20&&enemyStrafe<0)||(enemy.y>limits.bottom-20&&enemyStrafe>0))enemyStrafe*=-1;
   enemy.x=clamp(enemy.x,limits.left,limits.right);enemy.y=clamp(enemy.y,limits.top,limits.bottom);
   if(held.has('basic')&&player.cd===0){projectile('player',player,enemy,ARENA_BALANCE.playerBasicDamage,425,13,player.style.color);player.cd=ARENA_BALANCE.playerBasicCooldown;}
   if(held.has('special')&&player.special===0){projectile('player',player,enemy,ARENA_BALANCE.playerSpecialDamage,340,24,player.style.color,true);player.special=ARENA_BALANCE.playerSpecialCooldown;}
@@ -70,6 +77,7 @@ export function startArena({canvas,controls,attacker,defender,region='kanto',lev
   for(let i=effects.length-1;i>=0;i--)if(effects[i].life<=0)effects.splice(i,1);
   for(const sprite of impactSprites)sprite.life-=dt;
   for(let i=impactSprites.length-1;i>=0;i--)if(impactSprites[i].life<=0)impactSprites.splice(i,1);
+  if(onState&&elapsed-lastBroadcast>=.2){lastBroadcast=elapsed;onState(stateFrame());}
   if(enemy.hp<=0){finish('win');return;}if(player.hp<=0){finish('loss');}
  };
  const rounded=(x,y,w,h,r)=>{ctx.beginPath();ctx.roundRect(x,y,w,h,r);};
@@ -99,5 +107,5 @@ export function startArena({canvas,controls,attacker,defender,region='kanto',lev
  };
  const loop=now=>{if(stopped||ended)return;const dt=clamp((now-last)/1000,0,.04);last=now;update(dt);if(!ended){draw();frame=requestAnimationFrame(loop);}};
  frame=requestAnimationFrame(loop);
- return {stop(){stopped=true;abort.abort();cancelAnimationFrame(frame);}};
+ return {stop(){stopped=true;abort.abort();cancelAnimationFrame(frame);},sync(remote){if(!spectator||stopped||!remote)return;for(const [target,data] of [[player,remote.player],[enemy,remote.enemy]])if(data){target.x=clamp(data.x,limits.left,limits.right);target.y=clamp(data.y,limits.top,limits.bottom);target.hp=clamp(data.hp,0,target.maxHp);target.dir=data.dir;target.moving=true;}time=clamp(remote.time,0,LIMIT);}};
 }

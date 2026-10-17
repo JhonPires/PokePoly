@@ -12,19 +12,21 @@ O jogo é estático: pode ser servido pelo Live Server, por hospedagem estática
 
 O host mantém o estado e valida dados, cartas, pagamentos, batalhas, saldo, posse, turnos e versões. Os convidados enviam comandos; não enviam um estado substituto. O transporte entre navegadores é WebRTC/PeerJS, em estrela, com sinalização no serviço público PeerServer Cloud. Esse serviço ajuda a localizar o host; a aplicação não usa backend próprio de partidas. A biblioteca PeerJS 1.5.5 está incluída em `assets/vendor` com licença MIT. Documentação: https://peerjs.com/client/getting-started.
 
+Nas salas online, o treinador da vez escolhe um Pokémon de suas casas e joga a arena com movimento, duas habilidades e dash. Os demais acompanham posições, vida e tempo em tempo real. O host recebe o resultado, confere o quadro final e aplica aluguel ou prêmio uma única vez antes de avançar o turno.
+
 Entre abas da mesma origem, BroadcastChannel evita conexões externas desnecessárias. O lobby informa se a sinalização pública está conectada ou se apenas outras abas do mesmo navegador poderão entrar. Redes que bloqueiam WebRTC podem impedir a conexão; não há TURN próprio. Para amigos em outras máquinas, todos precisam conseguir abrir a mesma página estática; `127.0.0.1` é apenas o endereço do seu próprio computador. Uma hospedagem estática HTTPS resolve a distribuição da página sem VPS.
 
 Mantenha a aba do host aberta. Recarregar tenta restaurar o host e as sessões com sessionStorage; convidados podem precisar recarregar para reconectar. Não há migração automática para outro host se o criador fechar a aba. Sair do lobby libera o lugar; após iniciar, o lugar fica reservado para reconexão. O host é confiável para arbitrar esta partida casual.
 
 ## Regiões e catálogo
-Kanto (151 espécies, geração I), Johto (100, geração II) e Hoenn (135, geração III) têm 40 casas, locais, grupos e cenários próprios. O catálogo de jogo contém 386 espécies. O índice evolutivo contém 1.025 espécies para reconhecer pré-evoluções de outras gerações. Dados públicos da PokéAPI: https://github.com/PokeAPI/pokeapi/tree/master/data/v2/csv. `scripts/import-pokedex.py` atualiza JSON, módulo do catálogo e índice de GIFs; a partida não consulta a API.
+Kanto (151), Johto (100), Hoenn (135), Sinnoh (107), Unova (156), Kalos (72), Alola (88), Galar (96) e Paldea (120) têm 40 casas, locais, grupos e imagens de tabuleiro próprios. O catálogo contém 1.025 espécies, separadas pela geração de cada região. Dados públicos da PokéAPI: https://github.com/PokeAPI/pokeapi/tree/master/data/v2/csv. `scripts/import-pokedex.py` atualiza JSON, módulo do catálogo e índice de GIFs. O jogo usa GIFs locais quando disponíveis e imagens do repositório de sprites da PokéAPI para as demais espécies; nesse caso, exibir a imagem requer acesso à internet. A batalha usa as folhas de animação do SpriteCollab quando disponíveis.
 
 As três opções de cada território compartilham tipo e estágio evolutivo real, calculado sobre toda a árvore, sem reiniciar a contagem na fronteira entre gerações. Crobat é terceiro estágio; Steelix e Scizor são segundo; Skarmory é primeiro. As ofertas só incluem espécies da geração escolhida e só formam trios quando existem três candidatos compatíveis. O sorteio varia por casa e partida, evitando repetições enquanto há opções suficientes.
 
 ## Nível da casa e evolução da espécie
 Cada território tem **quatro níveis de melhoria**, para qualquer Pokémon. Cada melhoria custa 60% do preço inicial da casa, arredondado para a próxima dezena, e aumenta o aluguel segundo o mesmo multiplicador (1x, 3x, 5x e 7x), independentemente da quantidade de evoluções da espécie.
 
-Quando existe uma próxima evolução da linha selecionada dentro da geração, a espécie muda. Caso contrário, ocorre treinamento: a espécie permanece e o nível da casa aumenta normalmente. Assim, um Pokémon sem evolução ou já evoluído não perde níveis de melhoria nem potencial de aluguel. O GIF usa a última espécie disponível, nunca uma posição inexistente na linha. Melhorias continuam limitadas a uma por turno e somente na casa atual.
+Quando existe uma próxima evolução da linha selecionada dentro da geração, a espécie muda. Caso contrário, ocorre treinamento: a espécie permanece e o nível da casa aumenta normalmente. Assim, um Pokémon sem evolução ou já evoluído não perde níveis de melhoria nem potencial de aluguel. A imagem usa a última espécie disponível, nunca uma posição inexistente na linha. Melhorias continuam limitadas a uma por turno e somente na casa atual.
 
 ## Outras regras
 - Cada treinador começa sem Pokémon. Somente a captura de um território adiciona um defensor ao time e libera desafios.
@@ -36,7 +38,7 @@ Quando existe uma próxima evolução da linha selecionada dentro da geração, 
 - Descanso: paga 100 moedas ou tenta dados iguais. Falha perde turno; sucesso avança sem jogada extra.
 - Grupo completo: +50% de aluguel em todas as casas desse grupo.
 - Cartas de Sorte/Revés têm recompensas, custos ou envio ao Descanso. Saldos são limitados a zero; dívidas de aluguel são resolvidas na Central Financeira.
-- A Liga termina após 24 rodadas completas. Vence o maior patrimônio (dinheiro + preço de captura + melhorias investidas). Se restar apenas um treinador antes disso, ele vence imediatamente.
+- A duração é escolhida ao criar a partida (4 a 100 rodadas; padrão de 24). Vence o maior patrimônio: dinheiro em caixa + preço de captura das casas possuídas + valor investido nas melhorias. O placar final mostra essas parcelas. Se restar apenas um treinador antes disso, ele vence imediatamente.
 
 ## Interface e arquivos
 Tabuleiro completo no viewport, dados com animação, salto de pinos e modal após chegada. Tela lateral em estilo Pokégear, pinos temáticos e cenários locais, sem verde no tema. Botões do lobby compartilham altura, largura, tipografia e alinhamento.
@@ -57,7 +59,7 @@ Para uma etapa futura: hospedagem estática pública da página, migração de h
 - Ao ficar sem dinheiro, a Central Financeira oferece venda ao banco ou declaração de falência. A venda retorna 50% do investimento total (captura + melhorias); a casa fica livre, perde suas melhorias e o defensor sai do time.
 - Aluguel não coberto pelo saldo fica como dívida. Dinheiro recuperado por venda quita essa dívida antes de continuar; a cobrança não é repetida. Não é permitido prosseguir enquanto ainda houver dívida ou saldo zerado.
 - Falência requer confirmação na interface, elimina o treinador e libera todas as suas casas. Turnos pulam eliminados. O último treinador ativo vence.
-- Duas artes de carta, Sorte e Revés, estão em `assets/cards`. O menu **Cartas de Sorte / Revés** permite visualizar os modelos sem aplicar efeitos. Nos encontros, a arte recebe o título e o texto da carta sorteada.
+- Cada uma das nove regiões tem um baralho próprio com cinco cartas de Sorte e cinco de Revés, com títulos, textos, Pokémon e efeitos próprios. As artes regionais estão em `assets/cards`; Kanto conserva as artes de Sorte e Revés originais. O menu **Cartas de Sorte / Revés** permite escolher a região e visualizar as cartas sem aplicar efeitos.
 
 ## Distribuição dos painéis e marca
 Em desktop, menu e treinadores ficam à esquerda; território e diário ficam à direita. O tabuleiro permanece ao centro e inteiro no viewport. Em telas de até 1000 px, ambos os lados são reunidos no menu recolhível. Modais, painéis e menu usam a mesma paleta de scrollbar. O logo PNG com transparência está em `assets/brand/pokepoly-logo.png`; prompt e origem em `docs/logo.md`.

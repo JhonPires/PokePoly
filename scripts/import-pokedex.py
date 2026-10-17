@@ -12,4 +12,4 @@ pathlib.Path('assets/data/pokedex.json').write_text(json.dumps(result,ensure_asc
 print('Cached species:',len(result))
 
 existing=[int(p.stem.split('_')[1]) for p in pathlib.Path('assets/pokemons').glob('poke_*.gif') if p.stem.split('_')[1].isdigit()]
-pathlib.Path('src/pokedex.js').write_text('export const evolutionDex='+json.dumps(result,ensure_ascii=False)+';\nexport const pokedex=evolutionDex.filter(p=>p.generation<=3);\nexport const availableSprites='+json.dumps(existing)+';\n',encoding='utf-8')
+pathlib.Path('src/pokedex.js').write_text('export const evolutionDex='+json.dumps(result,ensure_ascii=False)+';\nexport const pokedex=evolutionDex.filter(p=>p.generation<=9);\nexport const availableSprites='+json.dumps(existing)+';\n',encoding='utf-8')

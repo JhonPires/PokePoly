@@ -1,0 +1,82 @@
+/* Configuração compacta de partida, com seleção clara por região e duração. */
+#setup{width:min(790px,calc(100vw - 24px));padding:20px 24px 24px}
+#setup .setup-logo{height:56px;width:175px;margin:0}
+#setup .kicker{margin:2px 0 3px;font-size:9px}
+#setup h2{margin:0 0 12px;font-size:25px}
+#setup .mode-picker{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px;margin:0 0 14px}
+#setup .mode-picker label{display:flex;align-items:center;gap:9px;min-height:48px;margin:0;padding:9px 11px;border:2px solid #637a9c;border-radius:9px;background:#142640;color:#d8e2f2;font-size:12px;font-weight:700;cursor:pointer;transition:background .15s,border-color .15s,transform .15s}
+#setup .mode-picker label:hover{background:#233d62;transform:translateY(-1px)}
+#setup .mode-picker label:has(input:checked){background:#37456b;border-color:#f4d28c;color:#fff0c9;box-shadow:inset 0 0 0 1px #ffe9ac55}
+#setup .mode-picker label:has(input:focus-visible){outline:3px solid #ffe1a0;outline-offset:2px}
+#setup .mode-picker input{appearance:none;display:inline-grid;place-content:center;width:20px;height:20px;min-width:20px;margin:0;border:2px solid #a0b1ce;border-radius:50%;background:#0d1b32;cursor:pointer}
+#setup .mode-picker input::before{content:'';width:10px;height:10px;border-radius:50%;background:#ffd77d;transform:scale(0);transition:transform .15s}
+#setup .mode-picker input:checked{border-color:#ffe1a0}
+#setup .mode-picker input:checked::before{transform:scale(1)}
+.setup-config{display:grid;grid-template-columns:minmax(0,1fr) 215px;gap:12px;margin-bottom:10px}
+.setup-config label{color:#e5e9f6;font-size:12px;font-weight:700}
+.setup-config select,.setup-config input{width:100%;height:40px;margin:5px 0 0;padding:8px 10px;background:#0f2038;border:1px solid #8fa5c5;border-radius:7px;color:#fff0d0;font-size:12px}
+.setup-options{display:flex;flex-direction:column;justify-content:flex-start;gap:9px}
+.field-hint{font-size:10px;font-weight:400;color:#b6c4da}
+#setup #region-preview{height:94px;margin:7px 0 0}
+#setup #region-preview>img{width:115px;height:94px}
+#setup #region-preview b{font-size:18px}
+#setup #region-preview p{margin:3px 0;font-size:11px}
+#setup #region-preview small{font-size:10px}
+#setup .setup-trainer-hint{margin:11px 0 5px;font-size:12px}
+#setup #profiles{margin:7px 0 13px;gap:10px}
+#setup fieldset{padding:10px 12px 12px;border-radius:8px}
+#setup fieldset legend{font-size:12px;font-weight:800}
+#setup fieldset>label{font-size:11px}
+#setup fieldset>label input{height:36px;margin:5px 0 9px;padding:7px 9px;font-size:13px}
+#setup .pin-options{gap:5px}
+#setup .pin-option span{height:59px;padding:4px;gap:1px}
+#setup .pin-option .pin-art{width:31px;height:31px}
+#setup-submit{min-height:43px}
+
+/* As artes das regiões aparecem no cabeçalho dos diálogos do tabuleiro. */
+body{--dialog-scene:url('../assets/art/kanto-dusk.png')}
+body[data-region=johto]{--dialog-scene:url('../assets/art/johto-dusk.png')}
+body[data-region=hoenn]{--dialog-scene:url('../assets/art/hoenn-coast.png')}
+body[data-region=sinnoh]{--dialog-scene:url('../assets/art/sinnoh.png')}
+body[data-region=unova]{--dialog-scene:url('../assets/art/unova.png')}
+body[data-region=kalos]{--dialog-scene:url('../assets/art/kalos.png')}
+body[data-region=alola]{--dialog-scene:url('../assets/art/alola.png')}
+body[data-region=galar]{--dialog-scene:url('../assets/art/galar.png')}
+body[data-region=paldea]{--dialog-scene:url('../assets/art/paldea.png')}
+#cards-preview{width:min(790px,96vw)}
+#card-region-select{max-width:420px;display:block;margin:10px auto 20px}
+.event-card,.event-card.unlucky{position:relative;background:#142641;border:2px solid #e4c994}
+.event-card .card-art{position:absolute;inset:0;width:100%;height:100%;object-fit:fill;z-index:0;pointer-events:none}
+.event-card.regional::before{content:'';position:absolute;inset:0;z-index:1;background:linear-gradient(180deg,#13214300 30%,#0e1738dd 74%,#0e1738e8 100%);pointer-events:none}
+.event-card.regional.unlucky{border-color:#ec9aab}
+.event-card.regional.unlucky::before{background:linear-gradient(180deg,#6e294122 20%,#311b39d9 74%,#251b36ed 100%)}
+.event-card>:not(.card-art){z-index:2}
+.event-card .card-region{position:absolute;top:25px;left:22px;right:22px;color:#ffe8b2;font-size:10px;font-weight:900;letter-spacing:1.5px;text-shadow:0 2px 4px #0b1229}
+.event-card .card-feature{position:absolute;top:27%;left:50%;transform:translateX(-50%);width:92px;height:92px;display:grid;place-items:center;filter:drop-shadow(0 5px 4px #080e25)}
+.event-card .card-pokemon{max-width:100%;max-height:100%;object-fit:contain;image-rendering:pixelated}
+#cards-gallery .event-card{margin:0 auto}
+#arrival,#trade,#finance,#help,#victory,#lobby{position:relative;border-top-color:#f6d38b;background:linear-gradient(180deg,#1221398a 0,#1a2b47ed 100px,#192840 155px),var(--dialog-scene) center top/100% auto no-repeat,#192840}
+#arrival::before,#trade::before,#finance::before,#help::before,#victory::before,#lobby::before{content:'';position:absolute;top:0;left:0;right:0;height:5px;background:linear-gradient(90deg,#ed8e9b,#f9d77d,#a48ad8);border-radius:8px 8px 0 0;pointer-events:none}
+#arrival h2,#trade h2,#finance h2,#help h2,#victory h2,#lobby h2{color:#fff0c8;text-shadow:0 2px 5px #08162e,0 1px 0 #142943}
+#arrival .kicker,#trade .kicker,#finance .kicker,#help .kicker,#victory .kicker,#lobby .kicker{font-weight:800;text-shadow:0 2px 4px #08162e}
+.victory-score{display:flex;flex-direction:column;align-items:flex-end;gap:5px}
+.victory-score small{color:#d6e1f4;font-size:10px;font-weight:500;text-align:right}
+
+@media(max-width:600px){
+ #setup{padding:15px}
+ #setup .setup-logo{height:46px;width:150px}
+ #setup h2{font-size:21px}
+ #setup .mode-picker{gap:5px}
+ #setup .mode-picker label{min-height:52px;gap:5px;padding:5px;font-size:10px;line-height:1.2}
+ #setup .mode-picker input{width:16px;height:16px;min-width:16px}
+ #setup .mode-picker input::before{width:8px;height:8px}
+ .setup-config{grid-template-columns:1fr;gap:7px}
+ .setup-options{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:9px}
+ #setup #region-preview{height:76px}
+ #setup #region-preview>img{height:76px;width:95px}
+ #setup #profiles{grid-template-columns:1fr}
+ #setup .pin-option span{height:54px}
+ #setup .pin-option .pin-art{width:28px;height:28px}
+ .victory-row{align-items:flex-start}
+ .victory-score small{font-size:9px}
+}
