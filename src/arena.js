@@ -1,7 +1,7 @@
 import {evolutionDex} from './pokedex.js';
 import {spriteFor} from './sprites.js';
 import {playSound} from './sound.js';
-import {loadArenaSprite,directionFor,frameFor,visibleBottom} from './arena-sprites.js';
+import {loadArenaSprite,directionFor,frameFor,spriteFrame} from './arena-sprites.js';
 
 const species=new Map(evolutionDex.map(p=>[p.name,p]));
 const names={1:['Investida','Impacto'],2:['Soco Rápido','Onda de Força'],3:['Rajada','Ciclone'],4:['Ferrão','Névoa Tóxica'],5:['Pedrada','Tremor'],6:['Pedra Afiada','Avalanche'],7:['Picada','Enxame'],8:['Assombro','Bola Sombria'],9:['Garra de Aço','Canhão Metálico'],10:['Brasa','Bola de Fogo'],11:['Jato d’Água','Onda Azul'],12:['Folha Afiada','Chicote de Vinha'],13:['Choque','Raio'],14:['Confusão','Onda Psíquica'],15:['Vento Gelado','Raio de Gelo'],16:['Garra Dragão','Sopro Dragão'],17:['Mordida','Pulso Sombrio'],18:['Encanto','Brilho Feérico']};
@@ -29,12 +29,12 @@ export function startArena({canvas,controls,attacker,defender,region='kanto',lev
  const coarsePointer=typeof matchMedia==='function'&&matchMedia('(pointer: coarse)').matches;
  if(!coarsePointer)for(const style of [attackStyle,defendStyle]){effectImage('missile',style.missile);effectImage('effect',style.hit);}
  const regionId=['kanto','johto','hoenn','sinnoh','unova','kalos','alola','galar','paldea'].includes(region)?region:'kanto';
- const background=new Image();background.src=new URL(`../assets/arena/${regionId}.png`,import.meta.url).href;
+ const background=new Image();let backgroundFrame=null;const cacheBackground=()=>{if(!background.naturalWidth)return;const frame=document.createElement('canvas');frame.width=W;frame.height=H;const sourceHeight=background.naturalWidth*H/W,cropY=(background.naturalHeight-sourceHeight)/2;frame.getContext('2d').drawImage(background,0,Math.max(0,cropY),background.naturalWidth,Math.min(sourceHeight,background.naturalHeight),0,0,W,H);backgroundFrame=frame;};background.onload=cacheBackground;background.src=new URL(`../assets/arena/${regionId}.png`,import.meta.url).href;
  const limits=ARENA_LIMITS;
  const startX=132;
  const startY=(limits.top+limits.bottom)/2;
- const player={x:startX,y:startY,hp:100,maxHp:100,cd:0,special:0,dash:0,dashTime:0,flash:0,img:imageFor(attacker),sprite:loadArenaSprite(attacker),dir:2,actionAt:-10,moving:false,name:attacker,style:attackStyle};
- const enemy={x:W-startX,y:startY,hp:115+level*20,maxHp:115+level*20,cd:1,special:2.8,flash:0,img:imageFor(defender),sprite:loadArenaSprite(defender),dir:6,actionAt:-10,moving:false,name:defender,style:defendStyle};
+ const player={x:startX,y:startY,hp:100,maxHp:100,cd:0,special:0,dash:0,dashTime:0,flash:0,img:coarsePointer?null:imageFor(attacker),sprite:loadArenaSprite(attacker),dir:2,actionAt:-10,moving:false,name:attacker,style:attackStyle};
+ const enemy={x:W-startX,y:startY,hp:115+level*20,maxHp:115+level*20,cd:1,special:2.8,flash:0,img:coarsePointer?null:imageFor(defender),sprite:loadArenaSprite(defender),dir:6,actionAt:-10,moving:false,name:defender,style:defendStyle};
  const held=new Set(),stickHeld=new Set(),pendingActions=new Map(),shots=[],effects=[],impactSprites=[];let time=LIMIT,elapsed=0,ended=false,stopped=false,frame=0,last=performance.now(),lastDraw=0,enemyStrafe=1,lastBroadcast=-1;
  if(initialState){for(const [target,data] of [[player,initialState.player],[enemy,initialState.enemy]])if(data){target.x=clamp(data.x,limits.left,limits.right);target.y=clamp(data.y,limits.top,limits.bottom);target.hp=clamp(data.hp,0,target.maxHp);target.dir=data.dir;}time=clamp(initialState.time,0,LIMIT);elapsed=LIMIT-time;}
  const abort=new AbortController(),keyMap={KeyW:'up',ArrowUp:'up',KeyS:'down',ArrowDown:'down',KeyA:'left',ArrowLeft:'left',KeyD:'right',ArrowRight:'right',KeyJ:'basic',Space:'basic',KeyK:'special',ShiftLeft:'dash',ShiftRight:'dash'};
@@ -90,15 +90,15 @@ export function startArena({canvas,controls,attacker,defender,region='kanto',lev
  const bar=(x,y,w,value,max,color)=>{ctx.fillStyle='#10192d';rounded(x,y,w,11,5);ctx.fill();ctx.fillStyle=color;rounded(x,y,w*clamp(value/max,0,1),11,5);ctx.fill();};
  const drawFighter=(fighter,side)=>{
   ctx.fillStyle='#080f22aa';ctx.beginPath();ctx.ellipse(fighter.x,fighter.y+21,33,9,0,0,Math.PI*2);ctx.fill();
-  if(fighter.flash)ctx.filter='brightness(2.5)';
-  if(fighter.sprite.ready){const attacking=elapsed-fighter.actionAt<.35;const animation=attacking?fighter.sprite.shoot:fighter.sprite.walk;const index=attacking?frameFor(animation,elapsed-fighter.actionAt):fighter.moving?frameFor(animation,elapsed):0;const scale=Math.min(2,120/animation.width,112/animation.height),width=animation.width*scale,height=animation.height*scale;const bottom=visibleBottom(animation,fighter.dir,index);ctx.imageSmoothingEnabled=false;ctx.drawImage(animation.image,index*animation.width,fighter.dir*animation.height,animation.width,animation.height,fighter.x-width/2,fighter.y+20-bottom*scale,width,height);}
-  else if(fighter.img.complete&&fighter.img.naturalWidth){ctx.imageSmoothingEnabled=false;ctx.drawImage(fighter.img,fighter.x-48,fighter.y-76,96,96);}else{ctx.fillStyle=fighter.style.color;ctx.beginPath();ctx.arc(fighter.x,fighter.y-16,29,0,Math.PI*2);ctx.fill();}
+  if(fighter.flash&&!coarsePointer)ctx.filter='brightness(2.5)';
+  if(fighter.sprite.ready){const attacking=elapsed-fighter.actionAt<.35;const animation=(attacking?fighter.sprite.shoot:null)||fighter.sprite.walk;const index=attacking?frameFor(animation,elapsed-fighter.actionAt):fighter.moving?frameFor(animation,elapsed):0;const scale=Math.min(2,120/animation.width,112/animation.height),width=animation.width*scale,height=animation.height*scale;const tile=spriteFrame(animation,fighter.dir,index,coarsePointer);ctx.imageSmoothingEnabled=false;ctx.drawImage(tile.image,fighter.x-width/2,fighter.y+20-tile.bottom*scale,width,height);}
+  else if(fighter.img?.complete&&fighter.img.naturalWidth){ctx.imageSmoothingEnabled=false;ctx.drawImage(fighter.img,fighter.x-48,fighter.y-76,96,96);}else{ctx.fillStyle=fighter.style.color;ctx.beginPath();ctx.arc(fighter.x,fighter.y-16,29,0,Math.PI*2);ctx.fill();}
   ctx.filter='none';bar(fighter.x-44,fighter.y-82,88,fighter.hp,fighter.maxHp,side==='player'?'#86baff':'#f28a99');
   ctx.fillStyle='#fff0d3';ctx.font='bold 12px Segoe UI';ctx.textAlign='center';ctx.fillText(fighter.name,fighter.x,fighter.y-89);
  };
  const draw=()=>{
   ctx.clearRect(0,0,W,H);
-  if(background.complete&&background.naturalWidth){const sourceHeight=background.naturalWidth*H/W,cropY=(background.naturalHeight-sourceHeight)/2;ctx.drawImage(background,0,Math.max(0,cropY),background.naturalWidth,Math.min(sourceHeight,background.naturalHeight),0,0,W,H);}else{ctx.fillStyle='#172841';ctx.fillRect(0,0,W,H);}
+  if(backgroundFrame)ctx.drawImage(backgroundFrame,0,0);else{ctx.fillStyle='#172841';ctx.fillRect(0,0,W,H);}
   ctx.fillStyle='#09142b28';ctx.fillRect(0,0,W,H);
   ctx.strokeStyle='#edc990aa';ctx.lineWidth=3;ctx.strokeRect(8,8,W-16,H-16);
   ctx.fillStyle='#0c1935dd';rounded(16,14,91,30,8);ctx.fill();ctx.fillStyle='#ffe0a8';ctx.font='bold 13px Segoe UI';ctx.textAlign='center';ctx.fillText(regionId.toUpperCase(),61,34);

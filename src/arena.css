@@ -33,9 +33,9 @@
  #battle-controls .arena-pad{display:none}
  #battle-controls .arena-stick{display:grid;place-items:center;flex:none;width:88px;height:88px;border:2px solid #f2d6a5;border-radius:50%;background:#101d3bcc;box-shadow:0 3px 15px #0008;touch-action:none;pointer-events:auto}
  #battle-controls .arena-stick span{width:42px;height:42px;border:2px solid #fff1d0;border-radius:50%;background:#8269b5;box-shadow:0 2px 8px #0009;pointer-events:none}
- #battle-controls .arena-actions{display:grid;grid-template-columns:repeat(2,minmax(58px,1fr));gap:5px;max-width:50%;pointer-events:auto}
- #battle-controls .arena-actions button{min-width:0;min-height:48px;padding:4px;font-size:11px;line-height:1.1;background:#152c52e8;border:2px solid #eacb9f}
- #battle-controls .arena-actions [data-control=basic]{grid-row:1 / 3;min-height:100px;background:#9b537bdc}
+ #battle-controls .arena-actions{display:flex;flex-direction:column;flex:none;gap:5px;width:104px;pointer-events:auto}
+ #battle-controls .arena-actions button{width:100%;min-width:0;height:46px;min-height:46px;padding:4px;font-size:11px;line-height:1.1;background:#152c52e8;border:2px solid #eacb9f}
+ #battle-controls .arena-actions [data-control=basic]{background:#9b537bdc}
  #battle-controls .arena-actions button:active{background:#d27283}
 }
 @media(max-width:1000px) and (max-height:500px) and (orientation:landscape){
@@ -43,10 +43,10 @@
  #battle .battle-top{padding:4px 9px;gap:6px}
  #battle .battle-top b{font-size:11px}
  #battle .battle-top progress{height:7px;margin-top:2px}
- #battle .battle-stage{width:min(calc(100vw - 24px),calc(174dvh - 179px));margin:4px auto}
- #battle-canvas{max-height:calc(100dvh - 103px)}
+ #battle .battle-stage{width:100%;margin:4px auto;display:flex;justify-content:center}
+ #battle .battle-stage #battle-canvas{width:min(calc(174dvh - 179px),calc(100vw - 240px));max-height:calc(100dvh - 103px)}
+ #battle #battle-controls:not([hidden]){left:0;right:0;padding:0 max(8px,env(safe-area-inset-right)) 8px max(8px,env(safe-area-inset-left));align-items:flex-end}
  #battle #message{margin:4px 0;padding:5px 8px;font-size:11px}
  #battle .arena-credit{display:none}
 }
-@media(min-width:700px) and (max-width:1000px) and (max-height:500px) and (orientation:landscape){#battle #battle-controls:not([hidden]){left:-108px;right:-140px;padding:0 4px 8px}}
 @media(max-width:620px){#battle{padding:10px}#battle-canvas{max-height:42dvh}#battle-controls{align-items:flex-start}.arena-actions{display:grid;grid-template-columns:repeat(2,minmax(65px,1fr))}}

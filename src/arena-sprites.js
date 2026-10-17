@@ -8,13 +8,19 @@ const pad=id=>String(id).padStart(4,'0');
 
 export function directionFor(dx,dy){const angle=Math.atan2(dy,dx)*180/Math.PI;return ((Math.round((90-angle)/45)%8)+8)%8;}
 export function frameFor(animation,seconds){if(!animation?.dur?.length||!animation.total)return 0;let tick=(seconds*60)%animation.total;for(let i=0;i<animation.dur.length;i++){if(tick<animation.dur[i])return i;tick-=animation.dur[i];}return animation.dur.length-1;}
-export function visibleBottom(animation,direction,frame){
+export function visibleBottom(animation,direction,frame,source){
  const key=direction+':'+frame;animation.bottoms||=new Map();if(animation.bottoms.has(key))return animation.bottoms.get(key);
- const canvas=document.createElement('canvas');canvas.width=animation.width;canvas.height=animation.height;
+ const canvas=source||document.createElement('canvas');if(!source){canvas.width=animation.width;canvas.height=animation.height;}
  const context=canvas.getContext('2d',{willReadFrequently:true});let pixels;
- try{context.drawImage(animation.image,frame*animation.width,direction*animation.height,animation.width,animation.height,0,0,animation.width,animation.height);pixels=context.getImageData(0,0,animation.width,animation.height).data;}catch{return animation.height;}
+ try{if(!source)context.drawImage(animation.image,frame*animation.width,direction*animation.height,animation.width,animation.height,0,0,animation.width,animation.height);pixels=context.getImageData(0,0,animation.width,animation.height).data;}catch{return animation.height;}
  let bottom=animation.height;outer:for(let y=animation.height-1;y>=0;y--)for(let x=0;x<animation.width;x++)if(pixels[(y*animation.width+x)*4+3]>24){bottom=y+1;break outer;}
  animation.bottoms.set(key,bottom);return bottom;
+}
+export function spriteFrame(animation,direction,frame,fast=false){
+ const key=direction+':'+frame;animation.frames||=new Map();if(animation.frames.has(key))return animation.frames.get(key);
+ const canvas=document.createElement('canvas');canvas.width=animation.width;canvas.height=animation.height;
+ canvas.getContext('2d').drawImage(animation.image,frame*animation.width,direction*animation.height,animation.width,animation.height,0,0,animation.width,animation.height);
+ const result={image:canvas,bottom:visibleBottom(animation,direction,fast?0:frame,fast&&frame!==0?undefined:canvas)};animation.frames.set(key,result);return result;
 }
 const fetchImage=url=>new Promise(resolve=>{const image=new Image();image.crossOrigin='anonymous';image.onload=()=>resolve(image);image.onerror=()=>resolve(null);image.src=url;});
 
@@ -43,9 +49,10 @@ export function loadArenaSprite(name){
    };
    sprite.walk=await build('Walk')||await build('Idle');
    if(!sprite.walk)return;
-   sprite.attack=await build('Attack')||sprite.walk;
-   sprite.shoot=await build('Shoot')||sprite.attack;
    sprite.ready=true;
+   const [attack,shoot]=await Promise.all([build('Attack'),build('Shoot')]);
+   sprite.attack=attack||sprite.walk;
+   sprite.shoot=shoot||sprite.attack;
   }catch{sprite.ready=false;}
  })();
  return sprite;
